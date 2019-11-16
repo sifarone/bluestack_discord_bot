@@ -56,5 +56,4 @@ async def on_message(msg):
         ''')    
 
 if __name__ == '__main__':
-    print('Bot Token : ', os.environ['DISCORD_TOKEN'])
     client.run(os.environ['DISCORD_TOKEN'])
