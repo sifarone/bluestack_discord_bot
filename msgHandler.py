@@ -41,9 +41,8 @@ class MessageHandler():
             result = []
             searchHistory =  self.dbClient.getUserSearchHistory(str(msg.author))
             if len(searchHistory):
-                for i in searchHistory:
-                    if searchHistoryTerm in i:
-                        result.append(i)
+                result = [term for term in searchHistory if searchHistoryTerm in term]
+                
             if result:
                 return "Search History for : <" + searchHistoryTerm + '> \n' + str(result)
             else:
