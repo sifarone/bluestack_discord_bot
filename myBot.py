@@ -1,15 +1,15 @@
 import discord
+import os
 from googlesearch import search
-from discord.ext import commands
 
 import utils
-from dbOperations import DatabaseHandler
+from dbOperations import DatabaseHandlerSQLite
 
-TOKEN = 'NjQ0NzU2NjQ5MjYwODc1Nzg3.Xc4vBQ.l4PFVeZw4cG7UuGuwuZqlKg-Z9E'
-
+# Create a Discord client
 client = discord.Client()
 
-dbClient = DatabaseHandler()
+#Create a Database handler object
+dbClient = DatabaseHandlerSQLite()
 
 @client.event
 async def on_ready():
@@ -17,12 +17,11 @@ async def on_ready():
 
 @client.event
 async def on_message(msg):
-    #print('memeber: ', msg.author)
-
     incomingMsg         = msg.content.strip()
     incomingMsgWords    = incomingMsg.split()
     msgWordCount        = len(incomingMsgWords)
 
+    # To avoid the infinite reply loop
     if msg.author.bot:
         return
 
@@ -31,23 +30,23 @@ async def on_message(msg):
 
     elif (msgWordCount > 1) and (incomingMsgWords[0] == '!google'):
         searchTerm = utils.joinWordsToMakeString(incomingMsgWords[1:])
-        print('--> : ', searchTerm)
+        print('Search Term : ', searchTerm)
         results = []
         for j in search(searchTerm, num=5, start=0, stop=5, pause=2): 
             print(j)
             results.append(j)
-        await dbClient.storeUserSearchHistory(str(msg.author), searchTerm)
+        dbClient.storeUserSearchHistory(str(msg.author), searchTerm)
         await msg.channel.send(results)
 
     elif (msgWordCount > 1) and (incomingMsgWords[0] == '!recent'):
         searchHistoryTerm = utils.joinWordsToMakeString(incomingMsgWords[1:])
         result = []
-        searchHistory =  await dbClient.getUserSearchHistory(str(msg.author))
+        searchHistory =  dbClient.getUserSearchHistory(str(msg.author))
         if len(searchHistory):
             for i in searchHistory:
                 if searchHistoryTerm in i:
                     result.append(i)
-        await msg.channel.send(set(result)) 
+        await msg.channel.send(set(result) if len(result) else result) 
     else:
         await msg.channel.send('< ' + incomingMsg + ' >' + ' is Not Supported.' + ''' 
         Allowed messages:
@@ -57,4 +56,5 @@ async def on_message(msg):
         ''')    
 
 if __name__ == '__main__':
-    client.run(TOKEN)
+    print('Bot Token : ', os.environ['DISCORD_TOKEN'])
+    client.run(os.environ['DISCORD_TOKEN'])
