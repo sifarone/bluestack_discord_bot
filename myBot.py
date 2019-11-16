@@ -20,7 +20,6 @@ async def on_message(msg):
         return
 
     response = msgHandler.processIncomingMessage(msg)
-    print('Response --> ', response)
     await msg.channel.send(response)
    
 if __name__ == '__main__':

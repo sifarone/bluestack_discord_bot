@@ -31,7 +31,6 @@ class DatabaseHandlerSQLite():
                 print('Data already exists in Database')
             else:
                 dbInsertString = "INSERT INTO '%s' VALUES ('%s', '%s')" % (config.USER_HISTORY_TABLE_NAME, userName, searchTerm)
-                print('DB Insert string : ', dbInsertString)
                 self.cur.execute(dbInsertString)
             self.conn.commit()
         except Exception as e:
@@ -44,8 +43,7 @@ class DatabaseHandlerSQLite():
         try:
             self.cur.execute(dbSearchString)
             for i in self.cur.fetchall():
-                result.append(i[1])    
-            print(result)
+                result.append(i[1])
             return result
         except Exception as e:
             print('Database Read Error : ', e)
