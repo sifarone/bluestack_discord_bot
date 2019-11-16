@@ -30,19 +30,19 @@ class DatabaseHandlerSQLite():
             if len(self.cur.fetchall()):
                 print('Data already exists in Database')
             else:
-                insertString = "INSERT INTO '%s' VALUES ('%s', '%s')" % (config.USER_HISTORY_TABLE_NAME, userName, searchTerm)
-                print('DB Insert string : ', insertString)
-                self.cur.execute(insertString)
+                dbInsertString = "INSERT INTO '%s' VALUES ('%s', '%s')" % (config.USER_HISTORY_TABLE_NAME, userName, searchTerm)
+                print('DB Insert string : ', dbInsertString)
+                self.cur.execute(dbInsertString)
             self.conn.commit()
         except Exception as e:
             print('Database Insert Error : ', e)
 
     def getUserSearchHistory(self, userName):
         result = []
-        searchString = "SELECT * FROM '%s' WHERE username='%s'" % (config.USER_HISTORY_TABLE_NAME, userName)
-        print('DB Search String :',searchString)
+        dbSearchString = "SELECT * FROM '%s' WHERE username='%s'" % (config.USER_HISTORY_TABLE_NAME, userName)
+        print('DB Search String :',dbSearchString)
         try:
-            self.cur.execute(searchString)
+            self.cur.execute(dbSearchString)
             for i in self.cur.fetchall():
                 result.append(i[1])    
             print(result)
