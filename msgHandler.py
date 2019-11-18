@@ -32,7 +32,7 @@ class MessageHandler():
             print('Search Term : ', searchTerm)
             results = []
             for j in search(searchTerm, num=5, start=0, stop=5, pause=2): 
-                results.append(j)
+                results.append(utils.decodeUrls(j))
             self.dbClient.storeUserSearchHistory(str(msg.author), searchTerm)
             return "Search results for : <" + searchTerm + '> \n' +  str(results)
 
@@ -50,5 +50,3 @@ class MessageHandler():
 
         else:
             return 'Invalid Message'
-
-
